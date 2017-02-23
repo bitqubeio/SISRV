@@ -24,9 +24,10 @@ Route::resource('item', 'ItemController');
 Route::get('api/items', 'ItemController@listing');
 
 // Purchase
-Route::get('purchase/get/{recurse}','PurchaseController@getRecurse');
-Route::resource('purchase','PurchaseController');
-Route::get('purchase/getsupplier/{ruc}','PurchaseController@getSupplier');
+Route::get('purchase/get/{recurse}', 'PurchaseController@getRecurse');
+Route::resource('purchase', 'PurchaseController');
+Route::get('purchase/getsupplier/{ruc}', 'PurchaseController@getSupplier');
+Route::get('dropdown-payment-conditions', 'PurchaseController@getPayments');
 
 // Payment Condition
 Route::resource('paymentcondition', 'PaymentconditionController');

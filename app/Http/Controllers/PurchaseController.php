@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PurchaseCreateRequest;
+use App\Purchase;
 use Illuminate\Http\Request;
 use App\Supplier;
 use App\Item;
@@ -43,7 +44,7 @@ class PurchaseController extends Controller
                 $i = 1;
                 foreach ($items as $item) {
                     $json_string = $item->item_barcode . ' - ' . $item->item_code . ' - ' . $item->item_description;
-                    $json_strings[] = ['product' => $json_string, 'code' => $item->item_code, 'description' => $item->item_description, 'brand' => $item->brand->brand_name];
+                    $json_strings[] = ['product' => $json_string, 'id' => $item->id, 'code' => $item->item_code, 'description' => $item->item_description, 'brand' => $item->brand->brand_name];
                     $i++;
                 }
                 break;
@@ -59,8 +60,16 @@ class PurchaseController extends Controller
         return response()->json($json_strings);
     }
 
+    public function getPayments(Request $request)
+    {
+        if ($request->ajax()) {
+            $payment_conditions = Purchase::payment_conditions();
+            return response()->json($payment_conditions);
+        }
+    }
+
     public function store(PurchaseCreateRequest $request)
     {
-
+        dd($request->all());
     }
 }
