@@ -64,10 +64,11 @@
 </head>
 
 <body>
-
+<!--
 <div id="bqsales-loader">
     <img src="{{ url('bqsales/img/favicon.png') }}" alt="Cargando...">
 </div>
+-->
 
 @include('layouts.includes.header')
 

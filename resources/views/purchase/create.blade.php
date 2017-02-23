@@ -19,14 +19,14 @@
                         <label for="purchase_type_currency" class="form-control-label">Tipo de moneda:</label>
                         <span class="text-danger">*</span>
                         {!! Form::select('purchase_type_currency', ['Soles'=>'PEN (Soles)','Dolares'=>'USD (Dólares)'], null, ['id'=>'purchase_type_currency', 'class'=>'form-control form-control-sm mousetrap', 'placeholder'=>'Tipo de moneda']) !!}
-                        <div class="form-control-feedback"></div>
+                        {{--<div class="form-control-feedback"></div>--}}
                     </div>
 
                     <div id="field_paymentcondition_id" class="form-group">
                         <label for="paymentcondition_id" class="form-control-label">Condición de pago:</label>
                         <span class="text-danger">*</span>
                         {!! Form::select('paymentcondition_id', [], null, ['id'=>'paymentcondition_id', 'class'=>'form-control form-control-sm mousetrap', 'data-placeholder'=>'Condición de pago','data-url'=>url('dropdown-payment-conditions')]) !!}
-                        <div class="form-control-feedback"></div>
+                        {{--<div class="form-control-feedback"></div>--}}
                     </div>
 
                 </div>
@@ -37,7 +37,7 @@
                             <label for="supplier_id" class="form-control-label">Ruc:</label>
                             <span class="text-danger">*</span>
                             {!! Form::text('supplier_id', null, ['id'=>'supplier_id', 'class'=>'form-control form-control-sm mousetrap', 'placeholder'=>'Ruc del proveedor', 'autocomplete'=>'off']) !!}
-                            <div class="form-control-feedback"></div>
+                            {{--<div class="form-control-feedback"></div>--}}
                         </div>
 
                         <div class="form-group col-lg-8">
@@ -58,7 +58,7 @@
                         <label for="purchase_document" class="form-control-label">Tipo de documento:</label>
                         <span class="text-danger">*</span>
                         {!! Form::select('purchase_document', ['Factura'=>'Factura','Boleta'=>'Boleta','Proforma'=>'Proforma'], null, ['id'=>'purchase_document', 'class'=>'form-control form-control-sm mousetrap', 'placeholder'=>'Tipo de documento']) !!}
-                        <div class="form-control-feedback"></div>
+                        {{--<div class="form-control-feedback"></div>--}}
                     </div>
 
                     <div id="field_purchase_document_number" class="form-group">
@@ -68,7 +68,7 @@
                             {!! Form::text('purchase_document_number_series', null, ['id'=>'purchase_document_number_series', 'class'=>'form-control form-control-sm mousetrap', 'placeholder'=>'Serie', 'autocomplete'=>'off']) !!}
                             {!! Form::text('purchase_document_number', null, ['id'=>'purchase_document_number', 'class'=>'form-control form-control-sm mousetrap', 'placeholder'=>'Número', 'autocomplete'=>'off']) !!}
                         </div>
-                        <div class="form-control-feedback"></div>
+                        {{--<div class="form-control-feedback"></div>--}}
                     </div>
 
                 </div>
@@ -78,7 +78,7 @@
                         <label for="purchase_igv" class="form-control-label">Incluir impuesto:</label>
                         <span class="text-danger">*</span>
                         {!! Form::select('purchase_igv', [1=>'Ítems con IGV',0=>'Ítems sin IGV'], null, ['id'=>'purchase_igv', 'class'=>'form-control form-control-sm mousetrap', 'placeholder'=>'Incluir impuesto']) !!}
-                        <div class="form-control-feedback"></div>
+                        {{--<div class="form-control-feedback"></div>--}}
                     </div>
 
                     <div id="field_purchase_guide_number" class="form-group">
@@ -88,7 +88,7 @@
                             {!! Form::text('purchase_guide_number_series', null, ['id'=>'purchase_guide_number_series', 'class'=>'form-control form-control-sm mousetrap', 'placeholder'=>'Serie', 'autocomplete'=>'off']) !!}
                             {!! Form::text('purchase_guide_number', null, ['id'=>'purchase_guide_number', 'class'=>'form-control form-control-sm mousetrap', 'placeholder'=>'Número', 'autocomplete'=>'off']) !!}
                         </div>
-                        <div class="form-control-feedback"></div>
+                        {{--<div class="form-control-feedback"></div>--}}
                     </div>
 
                 </div>
@@ -98,14 +98,14 @@
                         <label for="purchase_emission_date" class="form-control-label">Fecha de emisión:</label>
                         <span class="text-danger">*</span>
                         {!! Form::text('purchase_emission_date', null, ['id'=>'purchase_emission_date', 'class'=>'form-control form-control-sm mousetrap datepicker', 'placeholder'=>'Fecha']) !!}
-                        <div class="form-control-feedback"></div>
+                        {{--<div class="form-control-feedback"></div>--}}
                     </div>
 
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <div id="search-item">
+                    <div id="search-item" class="search-item">
                         <label class="mr-sm-2" for="inlineFormCustomSelect">Buscar ítem:</label>
                         <input type="text" id="typeahead"
                                class="typeahead form-control form-control-sm mb-2 mr-sm-2 mb-sm-0">
@@ -214,7 +214,7 @@
             function addRow(a) {
                 rows += 1;
                 var b = '<tr data-product-id="' + rows + '">';
-                b += '<td data-product="id" style="font-weight: bold;"></td>', b += '<td data-product="code"><input name="item[]" type="hidden" value="' + a.id + '">' + a.code + "</td>", b += '<td data-product="description">' + a.description + "</td>", b += '<td data-product="brand">' + a.brand + "</td>", b += '<td class="text-center" data-product="quantity"><input name="quantity[]" type="number" min="0" class="form-control form-control-sm text-center" value="1"></td>', b += '<td data-product="prize"><input type="text" value="0.00" class="text-right form-control form-control-sm"></td>', b += '<td data-product="total-prize" class="text-right"><input type="text" value="0.00" class="text-right form-control form-control-sm"></td>', b += '<td class="text-center"><a onClick="deleteRow(\'' + rows + '\')"><i class="fa fa-close"></i></a></td>', b += "</tr>", $("#products").append(b), updateTable()
+                b += '<td data-product="id" style="font-weight: bold;"></td>', b += '<td data-product="code"><input name="item[]" type="hidden" value="' + a.id + '">' + a.code + "</td>", b += '<td data-product="description">' + a.description + "</td>", b += '<td data-product="brand">' + a.brand + "</td>", b += '<td class="text-center" data-product="quantity"><input name="quantity[]" type="number" min="0" class="form-control form-control-sm text-center" value="1"></td>', b += '<td data-product="prize"><input name="price[]" type="text" value="0.00" class="text-right form-control form-control-sm"></td>', b += '<td data-product="total-prize" class="text-right"><input type="text" value="0.00" class="text-right form-control form-control-sm"></td>', b += '<td class="text-center"><a onClick="deleteRow(\'' + rows + '\')"><i class="fa fa-close"></i></a></td>', b += "</tr>", $("#products").append(b), updateTable()
             }
 
             function updateTable() {
@@ -237,11 +237,18 @@
 
             function updateIgv(a) {
                 var b = $("select[name=igv] option:selected").val();
-                if (b > 0) {
+                if (b == 1) {
                     var c = Math.round(100 * a / 118 * 100) / 100, d = Math.round(100 * (a - c)) / 100;
                     $("#total").html(a.toFixed(2)), $("#total-sub").html(c.toFixed(2)), $("#total-igv").html(d.toFixed(2))
-                } else {
+                }
+                if (b == 0) {
                     var e = Math.round(1.18 * a * 100) / 100, d = Math.round(100 * (e - a)) / 100;
+                    $("#total").html(e.toFixed(2)), $("#total-sub").html(a.toFixed(2)), $("#total-igv").html(d.toFixed(2))
+                }
+                if (b == '') {
+                    var e = 0;
+                    var a = 0;
+                    var d = 0;
                     $("#total").html(e.toFixed(2)), $("#total-sub").html(a.toFixed(2)), $("#total-igv").html(d.toFixed(2))
                 }
             }
@@ -271,7 +278,7 @@
                 }).on("typeahead:selected", function (a, b) {
                     getSupplier(b)
                 });
-                $(".datepicker").datepicker({format: "dd/mm/yyyy"}), $("select[name=igv]").on("change", function () {
+                $("select[name=igv]").on("change", function () {
                     updateIgv(parseFloat($("#total-prize").html()))
                 }), $("#products").on("change", "tr > td > input", updateTable);
                 var c = new Bloodhound({

@@ -15,6 +15,31 @@ class CreatePurchasesTable extends Migration
     {
         Schema::create('purchases', function (Blueprint $table) {
             $table->increments('id');
+
+            $table->boolean('purchase_type_currency');
+
+            $table->integer('paymentcondition_id')->unsigned();
+            $table->foreign('paymentcondition_id')->references('id')->on('paymentconditions');
+
+            $table->integer('supplier_id')->unsigned();
+            $table->foreign('supplier_id')->references('id')->on('suppliers');
+
+            $table->string('purchase_document', 45);
+
+            $table->string('purchase_document_number_series', 3);
+            $table->string('purchase_document_number', 8);
+
+            $table->boolean('purchase_igv');
+
+            $table->string('purchase_guide_number_series', 3);
+            $table->string('purchase_guide_number', 8);
+
+            $table->date('purchase_emission_date');
+
+            $table->string('purchase_description', 500);
+
+            $table->string('purchase_notes', 500);
+
             $table->timestamps();
         });
     }
