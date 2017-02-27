@@ -26,13 +26,11 @@ class CreatePurchasesTable extends Migration
 
             $table->string('purchase_document', 45);
 
-            $table->string('purchase_document_number_series', 3);
-            $table->string('purchase_document_number', 8);
+            $table->string('purchase_document_number', 11);
 
             $table->boolean('purchase_igv');
 
-            $table->string('purchase_guide_number_series', 3);
-            $table->string('purchase_guide_number', 8);
+            $table->string('purchase_guide_number', 11);
 
             $table->date('purchase_emission_date');
 

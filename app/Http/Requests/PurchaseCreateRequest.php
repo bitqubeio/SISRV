@@ -27,6 +27,7 @@ class PurchaseCreateRequest extends FormRequest
             'purchase_type_currency' => 'required',
             'paymentcondition_id' => 'required',
             'supplier_id' => 'required',
+            'proveedor_id' => 'required',
             'purchase_document' => 'required',
             'purchase_document_number_series' => 'required',
             'purchase_document_number' => 'required',
