@@ -12,8 +12,8 @@
             <div class="row">
                 <div class="col-12">
                     <p class="text-right">
-                        <a href="{{ url('/item/create') }}">
-                            <button type="button" class="btn btn-sm"><i class="fa fa-plus" aria-hidden="true"></i> Agregar ítem</button>
+                        <a href="{{ url('/purchase/create') }}">
+                            <button type="button" class="btn btn-sm"><i class="fa fa-plus" aria-hidden="true"></i> Agregar compra</button>
                         </a>
                     </p>
                 </div>
@@ -52,13 +52,13 @@
                 "ajax": "{{ url('api/purchases') }}",
                 "columns": [
                     {data: 'id', name: 'id', sClass: 'font-weight-bold'},
-                    {data: 'purchase_document_number', name: 'items.purchase_document_number', sClass: 'text-center', orderable: false, searchable: false},
+                    {data: 'purchase_document_number', name: 'purchase_document_number'},
                     {data: 'supplier_ruc', name: 'supplier_ruc'},
                     {data: 'supplier_businessname', name: 'supplier_businessname'},
                     {data: 'purchase_emission_date', name: 'purchase_emission_date'},
                     {data: 'paymentcondition_name', name: 'paymentcondition_name'},
                     {data: 'purchase_type_currency', name: 'purchase_type_currency'},
-                    {data: 'total', name: 'total'},
+                    {data: 'total', name: 'total', sClass: 'text-right'},
                     {data: 'action', name: 'action', sClass: 'text-center', orderable: false, searchable: false}
                 ],
                 "language": {

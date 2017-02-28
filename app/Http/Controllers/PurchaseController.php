@@ -80,10 +80,30 @@ class PurchaseController extends Controller
                 'supplier_businessname',
                 'purchase_emission_date',
                 'paymentcondition_name',
-            ]);
+            ])
+            ->get();
 
         return Datatables::of($purchases)
+            ->addColumn('total', function ($purchase) {
+                $purchase_id = $purchase->id;
+                $precio = PurchaseDetail::where('purchase_id', $purchase_id)
+                    ->select(['purchase_price_without_igv', 'purchase_quantity'])
+                    ->get();
+
+                $total = null;
+                foreach ($precio as $p) {
+                    $total += round($p->purchase_price_without_igv, 2) * 1.18 * $p->purchase_quantity;
+                }
+                return number_format(round($total, 2), 2);
+            })
+            ->addColumn('action', function ($purchase) {
+                return '<a href="purchase/' . $purchase->id . '"><i class="fa fa-eye" aria-hidden="true" title="Ver detalle"></i></a>';
+            })
+            ->editColumn('purchase_document_number', function ($purchase) {
+                return '<a href="purchase/' . $purchase->id . '">' . $purchase->purchase_document_number . '</a>';
+            })
             ->editColumn('purchase_type_currency', function ($purchase) {
+                $type = null;
                 if ($purchase->purchase_type_currency == 1) {
                     $type = 'Soles';
                 } else {
@@ -91,31 +111,11 @@ class PurchaseController extends Controller
                 }
                 return $type;
             })
-            ->editColumn('purchase_type_currency', function ($purchase) {
-                $purchase_id = $purchase->id;
-                $precio = PurchaseDetail::where('purchase_id', $purchase_id)
-                    ->get(['purchase_price_with_igv', 'purchase_quantity'])->toArray();
-
-                $total = null;
-                foreach ($precio as $p) {
-                    $total .= $p->purchase_price_with_igv * $p->purchase_quantity;
-                }
-                return $total;
-            })
             ->make(true);
     }
 
     public function index()
     {
-        $precio = PurchaseDetail::where('purchase_id', 9)
-            ->get(['purchase_price_with_igv', 'purchase_quantity'])->toArray();
-
-        $total = null;
-        foreach ($precio as $p) {
-            $total .= $p->purchase_price_with_igv * $p->purchase_quantity;
-        }
-
-        dd($total);
         return view('purchase.index');
     }
 
@@ -173,5 +173,47 @@ class PurchaseController extends Controller
         } else {
             DB::rollBack();
         }
+    }
+
+    public function show($id)
+    {
+
+        $purchase = Purchase::join('suppliers', 'suppliers.id', '=', 'purchases.supplier_id')
+            ->join('paymentconditions', 'paymentconditions.id', '=', 'purchases.paymentcondition_id')
+            ->select(
+                'purchase_document_number',
+                'supplier_ruc',
+                'supplier_businessname',
+                'supplier_legaladdress',
+                'supplier_phone',
+                'supplier_email',
+                'supplier_observation',
+                'purchase_emission_date',
+                'purchase_type_currency',
+                'paymentcondition_name',
+                'purchase_guide_number',
+                'purchase_igv',
+                'purchase_description',
+                'purchase_notes'
+            )
+            ->where('purchases.id', $id)
+            ->get()->first();
+
+        $purchaseDetails = PurchaseDetail::join('items', 'items.id', '=', 'purchase_details.item_id')
+            ->join('brands', 'brands.id', '=', 'items.brand_id')
+            ->select(
+                'item_code',
+                'item_description',
+                'brand_name',
+                'purchase_price_without_igv',
+                'purchase_price_with_igv',
+                'purchase_quantity')
+            ->where('purchase_id', $id)
+            ->orderBy('purchase_details.created_at', 'DESC')
+            ->get();
+
+        //dd($purchase);
+
+        return view('purchase.show', compact('purchase', 'purchaseDetails'));
     }
 }

@@ -22,13 +22,13 @@ class CreatePurchaseDetailsTable extends Migration
             $table->integer('item_id')->unsigned();
             $table->foreign('item_id')->references('id')->on('items');
 
-            $table->decimal('purchase_price_without_igv', 6, 2)->unsigned();
+            $table->decimal('purchase_price_without_igv', 6, 4)->unsigned();
 
-            $table->decimal('purchase_price_with_igv', 6, 2)->unsigned();
+            $table->decimal('purchase_price_with_igv', 6, 4)->unsigned();
 
             $table->integer('purchase_quantity')->unsigned();
 
-            $table->decimal('purchase_amount', 7, 2)->unsigned();
+            $table->decimal('purchase_amount', 7, 4)->unsigned();
 
             $table->timestamps();
         });

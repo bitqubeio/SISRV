@@ -271,9 +271,9 @@ $(function() {
   });
   $('#products').on('keyup', 'tr > td > input', updateTable).on('change', 'tr > td > input', updateTable);
   $('#purchase_type_currency').on('change', function() {
-    if ($(this).val() == 2) {
+    if ($(this).val() == 'Dolares') {
       $('.currency').html('$');
-    } else if ($(this).val() == 1) {
+    } else if ($(this).val() == 'Soles') {
       $('.currency').html('S\\.');
     } else {
       $('.currency').html('');
@@ -324,7 +324,7 @@ $(function() {
     }).on("typeahead:selected", function(a, b) {
       d.typeahead("val", ""), addRow(b)
     }).on("keyup", function(a) {
-      13 == a.which && $("#search-item > .twitter-typeahead > .tt-menu > .tt-dataset > .tt-suggestion:first-child").trigger("click")
+      13 == a.which && $(".tt-dataset > .tt-suggestion:first-child").trigger("click")
     }).on('typeahead:autocomplete', function(a, b) {
       d.typeahead("val", ""), addRow(b)
     });
