@@ -97,7 +97,8 @@ class PurchaseController extends Controller
                 return number_format(round($total, 2), 2);
             })
             ->addColumn('action', function ($purchase) {
-                return '<a href="purchase/' . $purchase->id . '"><i class="fa fa-eye" aria-hidden="true" title="Ver detalle"></i></a>';
+                return '<a href="purchase/' . $purchase->id . '"><i class="fa fa-eye" aria-hidden="true" title="Ver detalle"></i></a>
+                        <a href="purchase/' . $purchase->id . '/edit"><i class="fa fa-pencil" aria-hidden="true" title="Editar"></i></a>';
             })
             ->editColumn('purchase_document_number', function ($purchase) {
                 return '<a href="purchase/' . $purchase->id . '">' . $purchase->purchase_document_number . '</a>';
@@ -215,5 +216,23 @@ class PurchaseController extends Controller
         //dd($purchase);
 
         return view('purchase.show', compact('purchase', 'purchaseDetails'));
+    }
+
+    public function edit($id)
+    {
+        // query para mostrar la factura (si deseas le quitas el toArray y descomentas el primer return)
+        $purchase = Purchase::find($id)->toArray();
+
+        // query para mostrar el detalle de la factura (si deses le quitas el toArray y descomentas el primer return)
+        $purchaseDetail = PurchaseDetail::where('purchase_id', '=', $id)->get()->toArray();
+
+        // linea para ver las variables como var_dump de php
+        dd($purchase, $purchaseDetail);
+
+        // esto usas si quieres mandarlo junto con la vista
+        return view('purchase.edit', ['purchase' => $purchase], compact('purchaseDetail'));
+
+        // esto si solo mostramos la vista y lo mandarias por otra ruta de metodo get toda las consultas de arriba
+        //return view('purchase.edit');
     }
 }

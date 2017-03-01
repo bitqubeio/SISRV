@@ -10,7 +10,7 @@
         <div class="container mt-4" id="container">
             <h3><i class="fa fa-file-text" aria-hidden="true"></i> Nueva compra</h3>
 
-            {{ Form::open(['id' => 'formPurchase', 'class'=>'small', 'data-url' => url('purchase')]) }}
+            {!! Form::model($purchase, ['method' => 'PUT', 'route' => ['purchase.update', $purchase->id],'id' => 'formPurchaseUpdate', 'class'=>'small', 'data-url' => url('purchase/' . $purchase->id)]) !!}
 
             <div class="row my-4">
                 <div class="col-lg-2" style="border-right:1px solid rgba(0,0,0,.1)">
@@ -50,6 +50,7 @@
                             <input type="text" class="form-control form-control-sm mousetrap" id="proveedor_direccion"
                                    name="proveedor_direccion" disabled>
                         </div>
+                        <input type="text" name="proveedor_id" hidden>
                     </div>
                 </div>
                 <div class="col-lg-2" style="border-right:1px solid rgba(0,0,0,.1)">
@@ -109,7 +110,7 @@
                         <label class="mr-sm-2" for="inlineFormCustomSelect">Buscar ítem:</label>
                         <input type="text" id="typeahead"
                                class="typeahead form-control form-control-sm mb-2 mr-sm-2 mb-sm-0">
-                        <button type="button" class="btn btn-sm">Agregar ítem</button>
+                        <button type="button" class="btn btn-sm" id="add-item">Agregar ítem</button>
                     </div>
                 </div>
             </div>
@@ -137,7 +138,7 @@
                                 <small>
                             </td>
                             <td class="text-right">
-                                <small>S/.</small>
+                                <small class="currency"></small>
                                 <span id="total-prize">0.00</span></td>
                             <td class="text-center"></td>
                         </tr>
@@ -169,17 +170,17 @@
                     <dl class="row totales">
                         <dt class="col-sm-5 text-right"><span class="align-middle">Sub-total</span></dt>
                         <dd class="col-sm-7">
-                            <small class="text-muted">S/.</small>
+                            <small class="text-muted currency"></small>
                             <span id="total-sub">0.00</span></dd>
 
                         <dt class="col-sm-5 text-right"><span class="align-middle">I.G.V (18%)</span></dt>
                         <dd class="col-sm-7">
-                            <small class="text-muted">S/.</small>
+                            <small class="text-muted currency"></small>
                             <span id="total-igv">0.00</span></dd>
 
                         <dt class="col-sm-5 text-right"><span class="align-middle">Total</span></dt>
                         <dd class="col-sm-7 total">
-                            <small class="text-muted">S/.</small>
+                            <small class="text-muted currency"></small>
                             <span id="total">0.00</span></dd>
                     </dl>
                 </div>
@@ -201,111 +202,140 @@
     {{ Html::script('bqsales/js/purchase.js') }}
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            urlParams();
+        function getSupplier(a) {
+  return void 0 !== a.length && 0 != a.lenght && void $.get("{{ url('/purchase/getsupplier') }}/" + a, function(a) {
+    var b = JSON.parse(JSON.stringify(a));
+    $("input[id=proveedor_nombre]").val(b.name), $("input[id=proveedor_direccion]").val(b.address), $("input[name=proveedor_id]").val(b.id)
+  })
+}
 
-            function getSupplier(a) {
-                return void 0 !== a.length && 0 != a.lenght && void $.get("{{ url('/purchase/getsupplier') }}/" + a, function (a) {
-                        var b = JSON.parse(JSON.stringify(a));
-                        $("input[id=proveedor_nombre]").val(b.name), $("input[id=proveedor_direccion]").val(b.address)
-                    })
-            }
+function addRow(a) {
+  rows += 1;
+  var b = '<tr data-product-id="' + rows + '">';
+  b += '<td data-product="id" style="font-weight: bold;"></td>', b += '<td data-product="code"><input name="item[]" type="hidden" value="' + a.id + '">' + a.code + "</td>", b += '<td data-product="description">' + a.description + "</td>", b += '<td data-product="brand">' + a.brand + "</td>", b += '<td class="text-center" data-product="quantity"><input name="quantity[]" type="number" min="0" class="form-control form-control-sm text-center" value="1"></td>', b += '<td data-product="prize"><input name="price[]" type="text" value="0.00" class="text-right form-control form-control-sm"></td>', b += '<td data-product="total-prize" class="text-right"><input type="text" disabled value="0.00" class="text-right form-control form-control-sm"></td>', b += '<td class="text-center"><a onClick="deleteRow(\'' + rows + '\')"><i class="fa fa-close"></i></a></td>', b += "</tr>", $("#products").append(b), updateTable()
+}
 
-            function addRow(a) {
-                rows += 1;
-                var b = '<tr data-product-id="' + rows + '">';
-                b += '<td data-product="id" style="font-weight: bold;"></td>', b += '<td data-product="code"><input name="item[]" type="hidden" value="' + a.id + '">' + a.code + "</td>", b += '<td data-product="description">' + a.description + "</td>", b += '<td data-product="brand">' + a.brand + "</td>", b += '<td class="text-center" data-product="quantity"><input name="quantity[]" type="number" min="0" class="form-control form-control-sm text-center" value="1"></td>', b += '<td data-product="prize"><input name="price[]" type="text" value="0.00" class="text-right form-control form-control-sm"></td>', b += '<td data-product="total-prize" class="text-right"><input type="text" value="0.00" class="text-right form-control form-control-sm"></td>', b += '<td class="text-center"><a onClick="deleteRow(\'' + rows + '\')"><i class="fa fa-close"></i></a></td>', b += "</tr>", $("#products").append(b), updateTable()
-            }
+function updateTable() {
+  var a = 0;
+  $("td[data-product=quantity]").find("input").each(function() {
+    a += parseInt($(this).val())
+  }), $("#total-items").html(a), $("#products").find("tr").each(function() {
+    var a = $(this).children("td[data-product=quantity]").children().val(),
+      b = $(this).children("td[data-product=prize]").children().val(),
+      c = "undefined" !== b.lenght && b > 0 ? b : 0,
+      d = "undefined" !== a.lenght && a > 0 ? a : 0,
+      e = Math.round(parseFloat(c) * parseInt(d) * 100) / 100;
+    $(this).children("td[data-product=total-prize]").children().val(e)
+  });
+  var b = 0;
+  $("td[data-product=total-prize]").find("input").each(function() {
+    var a = $(this).val();
+    "undefined" !== a.lenght && a > 0 ? a : 0;
+    b = Math.round(100 * (b + parseFloat(a))) / 100
+  }), $("#total-prize").html(b.toFixed(2));
+  for (var c = document.getElementById("products"), d = c.getElementsByTagName("tr"), e = ("textContent" in document ? "textContent" : "innerText"), f = 0, g = d.length; f < g; f++) d[f].children[0][e] = f + 1;
+  if ($("select[name=purchase_igv]").val() != "")
+    updateIgv(b)
+}
 
-            function updateTable() {
-                var a = 0;
-                $("td[data-product=quantity]").find("input").each(function () {
-                    a += parseInt($(this).val())
-                }), $("#total-items").html(a), $("#products").find("tr").each(function () {
-                    var a = $(this).children("td[data-product=quantity]").children().val(), b = $(this).children("td[data-product=prize]").children().val(), c = "undefined" !== b.lenght && b > 0 ? b : 0, d = "undefined" !== a.lenght && a > 0 ? a : 0, e = Math.round(parseFloat(c) * parseInt(d) * 100) / 100;
-                    $(this).children("td[data-product=total-prize]").children().val(e)
-                });
-                var b = 0;
-                $("td[data-product=total-prize]").find("input").each(function () {
-                    var a = $(this).val();
-                    "undefined" !== a.lenght && a > 0 ? a : 0;
-                    b = Math.round(100 * (b + parseFloat(a))) / 100
-                }), $("#total-prize").html(b.toFixed(2));
-                for (var c = document.getElementById("products"), d = c.getElementsByTagName("tr"), e = ("textContent" in document ? "textContent" : "innerText"), f = 0, g = d.length; f < g; f++)d[f].children[0][e] = f + 1;
-                updateIgv(b)
-            }
+function updateIgv(total_prize) {
+  var with_igv = $('select[name=purchase_igv] option:selected').val();
+  if (with_igv == 1) {
+    var sub = Math.round((100 * total_prize / 118) * 100) / 100;
+    var igv = Math.round((total_prize - sub) * 100) / 100;
+    $('#total').html(total_prize.toFixed(2));
+    $('#total-sub').html(sub.toFixed(2));
+    $('#total-igv').html(igv.toFixed(2));
+  } else if (with_igv === '0') {
+    var tot = Math.round((1.18 * total_prize) * 100) / 100;
+    var igv = Math.round((tot - total_prize) * 100) / 100;
+    $('#total').html(tot.toFixed(2));
+    $('#total-sub').html(total_prize.toFixed(2));
+    $('#total-igv').html(igv.toFixed(2));
+  } else {
+    $('#total').html('0.00');
+    $('#total-sub').html('0.00');
+    $('#total-igv').html('0.00');
+  }
+}
 
-            function updateIgv(a) {
-                var b = $("select[name=igv] option:selected").val();
-                if (b == 1) {
-                    var c = Math.round(100 * a / 118 * 100) / 100, d = Math.round(100 * (a - c)) / 100;
-                    $("#total").html(a.toFixed(2)), $("#total-sub").html(c.toFixed(2)), $("#total-igv").html(d.toFixed(2))
-                }
-                if (b == 0) {
-                    var e = Math.round(1.18 * a * 100) / 100, d = Math.round(100 * (e - a)) / 100;
-                    $("#total").html(e.toFixed(2)), $("#total-sub").html(a.toFixed(2)), $("#total-igv").html(d.toFixed(2))
-                }
-                if (b == '') {
-                    var e = 0;
-                    var a = 0;
-                    var d = 0;
-                    $("#total").html(e.toFixed(2)), $("#total-sub").html(a.toFixed(2)), $("#total-igv").html(d.toFixed(2))
-                }
-            }
+function deleteRow(a) {
+  $("tr[data-product-id=" + a + "]").remove(), updateTable()
+}
 
-            function deleteRow(a) {
-                $("tr[data-product-id=" + a + "]").remove(), updateTable()
-            }
-
-            var rows = 0;
-            $(function () {
-                $(document).keypress(function (a) {
-                    13 == a.which && a.preventDefault()
-                });
-                var a = new Bloodhound({
-                    datumTokenizer: function (a) {
-                        var b = Bloodhound.tokenizers.whitespace(a);
-                        return $.each(b, function (a, c) {
-                            for (var d = 0; d + 1 < c.length;)b.push(c.substr(d, c.length)), d++
-                        }), b
-                    },
-                    queryTokenizer: Bloodhound.tokenizers.whitespace,
-                    prefetch: {url: "{{ url('/purchase/get/suppliers')}}", cache: !1}
-                });
-                $("#supplier_id").typeahead({highlight: !0}, {
-                    name: "supplier",
-                    source: a
-                }).on("typeahead:selected", function (a, b) {
-                    getSupplier(b)
-                });
-                $("select[name=igv]").on("change", function () {
-                    updateIgv(parseFloat($("#total-prize").html()))
-                }), $("#products").on("change", "tr > td > input", updateTable);
-                var c = new Bloodhound({
-                    datumTokenizer: Bloodhound.tokenizers.whitespace,
-                    queryTokenizer: Bloodhound.tokenizers.whitespace,
-                    remote: {url: "{{ url('/purchase/get/items')}}?term=%QUERY", wildcard: "%QUERY"}
-                }), d = $("#search-item > .typeahead").typeahead({minLength: 3, highlight: !0}, {
-                    displayKey: "product",
-                    name: "items",
-                    source: c
-                }).on("typeahead:selected", function (a, b) {
-                    d.typeahead("val", ""), addRow(b)
-                }).on("keyup", function (a) {
-                    13 == a.which && $(".tt-dataset > .tt-suggestion:first-child").trigger("click")
-                })
-            });
-
-            // datePicker
-            $('.datepicker').datepicker({
-                format: "dd/mm/yyyy",
-                todayBtn: 'linked',
-                language: "es",
-                orientation: "bottom auto",
-                autoclose: true,
-                todayHighlight: true
-            });
-
-        });
+var rows = 0;
+$(function() {
+  urlParams();
+  $('#add-item').on('click', function() {
+    $("#search-item > .twitter-typeahead > .tt-menu > .tt-dataset > .tt-suggestion:first-child").trigger("click")
+  });
+  $('#products').on('keyup', 'tr > td > input', updateTable).on('change', 'tr > td > input', updateTable);
+  $('#purchase_type_currency').on('change', function() {
+    if ($(this).val() == 2) {
+      $('.currency').html('$');
+    } else if ($(this).val() == 1) {
+      $('.currency').html('S\\.');
+    } else {
+      $('.currency').html('');
+    }
+  });
+  $(document).keypress(function(a) {
+    13 == a.which && a.preventDefault()
+  });
+  var a = new Bloodhound({
+    datumTokenizer: function(a) {
+      var b = Bloodhound.tokenizers.whitespace(a);
+      return $.each(b, function(a, c) {
+        for (var d = 0; d + 1 < c.length;) b.push(c.substr(d, c.length)), d++
+      }), b
+    },
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    prefetch: {
+      url: "{{ url('/purchase/get/suppliers')}}",
+      cache: !1
+    }
+  });
+  $("#supplier_id").typeahead({
+    highlight: !0
+  }, {
+    name: "supplier",
+    source: a
+  }).on("typeahead:selected", function(a, b) {
+    getSupplier(b)
+  });
+  $("select[name=purchase_igv]").on("change", function() {
+    updateIgv(parseFloat($("#total-prize").html()))
+  });
+  var c = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.whitespace,
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      remote: {
+        url: "{{ url('/purchase/get/items')}}?term=%QUERY",
+        wildcard: "%QUERY"
+      }
+    }),
+    d = $("#search-item > .typeahead").typeahead({
+      minLength: 3,
+      highlight: !0
+    }, {
+      displayKey: "product",
+      name: "items",
+      source: c
+    }).on("typeahead:selected", function(a, b) {
+      d.typeahead("val", ""), addRow(b)
+    }).on("keyup", function(a) {
+      13 == a.which && $("#search-item > .twitter-typeahead > .tt-menu > .tt-dataset > .tt-suggestion:first-child").trigger("click")
+    }).on('typeahead:autocomplete', function(a, b) {
+      d.typeahead("val", ""), addRow(b)
+    });
+  $('.datepicker').datepicker({
+    format: "dd/mm/yyyy",
+    todayBtn: 'linked',
+    language: "es",
+    orientation: "bottom auto",
+    autoclose: true,
+    todayHighlight: true
+  });
+});        
     </script>
 @endsection
