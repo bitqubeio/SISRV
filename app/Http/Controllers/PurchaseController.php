@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PurchaseCreateRequest;
 use App\Purchase;
 use App\PurchaseDetail;
+use App\Stock;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Supplier;
@@ -127,6 +128,9 @@ class PurchaseController extends Controller
 
     public function store(PurchaseCreateRequest $request)
     {
+
+        //dd(Stock::stock(1));
+
         //dd($request->all());
 
         DB::beginTransaction();
@@ -153,7 +157,20 @@ class PurchaseController extends Controller
 
         // for  echo $arrayItem[$i] . ' - ' . $arrayQuantity[$i] . ' - ' . $arrayPrice[$i];
         for ($i = 0; $i < $size; $i++) {
+            // stock update
+            $stock = Stock::stock($arrayItem[$i]);
+            if ($stock) {
+                $stock->stock_quantity = $stock->stock_quantity + $arrayQuantity[$i];
+            } else {
+                $stock = new Stock;
+                $stock->item_id = $arrayItem[$i];
+                $stock->stock_quantity = $arrayQuantity[$i];
+            }
+            $stock->save();
+
+            // purchase details
             $purchaseDetail = new PurchaseDetail($request->all());
+
             $purchaseDetail->purchase_id = $purchase->id;
             $purchaseDetail->item_id = $arrayItem[$i];
             $purchaseDetail->purchase_quantity = $arrayQuantity[$i];
