@@ -188,7 +188,10 @@
             <div class="row mt-4">
                 <div class="col-12 col-md-7 col-lg-12 text-right">
                     {{ Form::submit('Guardar y crear otro', ['name' => 'action', 'class' => 'btn btn-primary btn-sm']) }}
-                    <button class="btn btn-sm">Cancelar</button>
+                    <a href="{{ url('/purchase') }}">
+                        <button type="button" class="btn btn-sm">Cancelar</button>
+                    </a>
+                    <a href="{{ url('/purchase') }}" class="btn btn-link btn-sm"><i class="fa fa-list-ol" aria-hidden="true"></i> Fact. Compras</a>
                 </div>
             </div>
             {{ Form::close() }}

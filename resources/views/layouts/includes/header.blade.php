@@ -49,7 +49,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContentt">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a class="nav-link" href="#">Inicio</a>
                     </li>
                     <li class="nav-item">
@@ -66,12 +66,13 @@
                             <a class="dropdown-item" href="#">Cotizaciones</a>
                         </div>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown {{ Request::is('purchase*','paymentcondition*') ? 'active' : null }}">
                         <a class="nav-link dropdown-toggle" href="#" id="egreM" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Compras</a>
                         <div class="dropdown-menu" aria-labelledby="egreM">
-                            <a class="dropdown-item" href="#">Nueva compra</a>
-                            <a class="dropdown-item" href="#">Facturas de Compras</a>
+                            <a class="dropdown-item {{ Request::is('purchase/create') ? 'active' : null }}" href="{{ url('purchase/create') }}">Nueva compra</a>
+                            <a class="dropdown-item {{ Request::is('purchase') ? 'active' : null }}" href="{{ url('purchase') }}">Facturas de Compras</a>
                             <a class="dropdown-item" href="#">Pagos realizados</a>
+                            <a class="dropdown-item {{ Request::is('paymentcondition*') ? 'active' : null }}" href="{{ url('paymentcondition') }}">Condiciones de pago</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown {{ Request::is('item*') ? 'active' : null }}">

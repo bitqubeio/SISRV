@@ -59,6 +59,10 @@
                 text-transform: uppercase;
             }
 
+            a{
+                text-decoration: none;
+            }
+
             .m-b-md {
                 margin-bottom: 30px;
             }
@@ -75,16 +79,28 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel
+                    BQSales.io
                 </div>
 
-                <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
+                <div class="links" style="text-align: left">
+                    <ul style="font-weight: bold;">
+                        <li><a href="http://bqsales.io/purchase">Compras - Factura de compras</a></li>
+                        <li><a href="http://bqsales.io/paymentcondition">Compras - Condiciones de pago</a></li>
+                    </ul>
+                    <ul style="font-weight: bold;">
+                        <li><a href="http://bqsales.io/item">Inventario - Ítems</a></li>
+                    </ul>
+                    <ul style="font-weight: bold;">
+                        <li><a href="http://bqsales.io/customer">Contactos - Clientes</a></li>
+                        <li><a href="http://bqsales.io/supplier">Contactos - Proveedores</a></li>
+                    </ul>
+                    <ul style="font-weight: bold;">
+                        <li><a href="http://bqsales.io/category">Categorizacion - Categoría de ítems</a></li>
+                        <li><a href="http://bqsales.io/measure">Categorizacion - medida de ítems</a></li>
+                        <li><a href="http://bqsales.io/brand">Categorizacion - marcas de ítems</a></li>
+                    </ul>
                 </div>
+
             </div>
         </div>
     </body>

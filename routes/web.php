@@ -19,6 +19,10 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index');
 
+
+// price list dev
+Route::resource('priceList', 'PriceListController');
+
 // Items
 Route::resource('item', 'ItemController');
 Route::get('api/items', 'ItemController@listing');

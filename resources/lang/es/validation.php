@@ -212,6 +212,9 @@ return [
         'purchase_description' => 'descripción',
         'purchase_notes' => 'notas',
 
+
+        'price_list_name' => 'nombre',
+
     ],
 
 ];
